@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, API Gateway, and Lambda
 Resources:
-  YOUR_LAMBDA_FUNCTION_NAME:
+  Function:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
@@ -13,13 +13,13 @@ Resources:
       Timeout: 60
       Role: !GetAtt SNSLambdaFunctionRole.Arn
 
-  YOUR_SNS_TOPIC_NAME:
+  Topic:
     Type: AWS::SNS::Topic
     Properties:
       Subscription:
-        - Endpoint: !GetAtt YOUR_LAMBDA_FUNCTION_NAME
+        - Endpoint: !GetAtt Function
           Protocol: lambda
-    DependsOn: YOUR_LAMBDA_FUNCTION_NAME
+    DependsOn: Function
 
   SNSInvokePermission:
     Type: AWS::Lambda::Permission
