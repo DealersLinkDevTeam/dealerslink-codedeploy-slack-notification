@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, API Gateway, and Lambda
+Description: dealerslink-codedeploy-slack-notification - Delivers CodeDeploy Notifications via SNS triggers to a Slack Webhook. Powered by CloudFormation, SNS, and Lambda
 Resources:
   YOUR_LAMBDA_FUNCTION_NAME:
     Type: AWS::Serverless::Function
