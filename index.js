@@ -92,13 +92,13 @@ class SlackNotifier {
     const postData = {
       channel: `#${this.hookChannel}`,
       username: 'CodeDeploy Status',
-      text: `* ${event.Records[0].Sns.Subject} *`,
+      text: `* ${this.event.Records[0].Sns.Subject} *`,
       icon_emoji: ':aws:',
       attachments: []
     };
 
-    const fields = formatFields(event.Records[0].Sns.Message);
-    const messages = event.Records[0].Sns.Message;
+    const fields = formatFields(this.event.Records[0].Sns.Message);
+    const messages = this.event.Records[0].Sns.Message;
     let severity = severities.good;
 
     for (let idx in messages) {
