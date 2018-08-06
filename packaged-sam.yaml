@@ -4,7 +4,7 @@ Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, 
 Resources:
   Function:
     Properties:
-      CodeUri: s3://codedeploy-slack-notification-bucket/2cc3c32a56a2935ac251e3a9fecb0076
+      CodeUri: s3://codedeploy-slack-notification-bucket/a4e068352cbfccb01bba60abb49153bc
       Handler: index.handler
       MemorySize: 512
       Role:
