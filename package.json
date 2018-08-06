@@ -1,6 +1,6 @@
 {
   "name": "dealerslink-codedeploy-slack-notification",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An AWS Lambda-SNS function that reports CodeDeploy statuses to Slack",
   "main": "index.js",
   "config": {
