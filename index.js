@@ -89,16 +89,33 @@ class SlackNotifier {
   }
 
   work(done) {
+    let record, sns;
+    console.log(JSON.stringify(this.event));
+    console.log(typeof this.event);
+
+    // Skip if the event is empty or unset
+    if (!this.event || __.isUnset(this.event.Records)) {
+      done(null, 'No Records');
+      return;
+    } else {
+      record = this.event.Records[0];
+      if (__.isUnset(record.Sns)) {
+        done(null, 'No SNS Information');
+        return;
+      }
+      sns = record.Sns;
+    }
+
     const postData = {
       channel: `#${this.hookChannel}`,
       username: 'CodeDeploy Status',
-      text: `* ${this.event.Records[0].Sns.Subject} *`,
+      text: `* ${sns.Subject} *`,
       icon_emoji: ':aws:',
       attachments: []
     };
 
-    const fields = formatFields(this.event.Records[0].Sns.Message);
-    const messages = this.event.Records[0].Sns.Message;
+    const fields = this.formatFields(sns.Message);
+    const messages = sns.Message;
     let severity = severities.good;
 
     for (let idx in messages) {
