@@ -38,6 +38,12 @@ const warningMessages = [
   'Rollback of environment'
 ];
 
+const severities = {
+  good: 0,
+  warning: 1,
+  danger: 2
+};
+
 class SlackNotifier {
   constructor(event, context, callback, options) {
     this.options = __.merge({ ignoreQueue: false }, options || {});
@@ -93,20 +99,26 @@ class SlackNotifier {
 
     const fields = formatFields(event.Records[0].Sns.Message);
     const messages = event.Records[0].Sns.Message;
-    let severity = 'good';
+    let severity = severities.good;
 
     for (let idx in messages) {
       if (messages.hasOwnProperty(idx)) {
         let msg = messages[idx];
-        if (dangerMessages.includes(msg) {
-          severity = 'danger';
-          break;
-        } else if (warningMessages.includes(msg) {
-          severity = 'warning';
-          break;
+        if (dangerMessages.includes(msg)) {
+          severity |= severities.danger;
+        } else if (warningMessages.includes(msg)) {
+          severity |= severities.warning;
         }
       }
     }
+
+    let color = 'good';
+    if ((severity & severities.danger) === severities.danger) {
+      color = 'danger';
+    } else if ((severity & severities.warning) === severities.warning) {
+      color = 'warning';
+    }
+
     postData.attachments.push({ color: severity, fields: fields });
     let service = url.parse(this.hookURL);
 
