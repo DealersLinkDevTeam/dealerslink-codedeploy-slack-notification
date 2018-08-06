@@ -9,7 +9,7 @@ Resources:
       CodeUri: ./
       Handler: index.handler
       Runtime: nodejs8.10
-      MemorySize: 512
+      MemorySize: 128
       Timeout: 60
       Role: !GetAtt SNSLambdaFunctionRole.Arn
 

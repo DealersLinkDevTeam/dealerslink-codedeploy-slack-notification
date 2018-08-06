@@ -56,32 +56,42 @@ class SlackNotifier {
   }
 
   formatFields(str) {
-    const message = JSON.parse(str);
+    let message = JSON.parse(str);
     const fields  = [];
     let deploymentOverview;
 
+    try {
+      message = JSON.parse(str);
+    } catch (ex) {
+      message = str;
+    }
+
     // Make sure we have a valid response
     if (message) {
-      fields.push(
-        { title: 'Task', value: message.eventTriggerName, short: true },
-        { title: 'Status', value: message.status, short: true },
-        { title: 'Application', value: message.applicationName, short: true },
-        { title: 'Deployment Group', value: message.deploymentGroupName, short: true },
-        { title: 'Region', value: message.region, short: true },
-        { title: 'Deployment Id', value: message.deploymentId, short: true },
-        { title: 'Create Time', value: message.createTime, short: true },
-        { title: 'Complete Time', value: ((message.completeTime) ? message.completeTime : ''), short: true }
-      );
-
-      if (message.deploymentOverview) {
-        deploymentOverview = JSON.parse(message.deploymentOverview);
+      if (typeof messsage === 'object') {
         fields.push(
-          { title: 'Succeeded', value: deploymentOverview.Succeeded, short: true },
-          { title: 'Failed', value: deploymentOverview.Failed, short: true },
-          { title: 'Skipped', value: deploymentOverview.Skipped, short: true },
-          { title: 'In Progress', value: deploymentOverview.InProgress, short: true },
-          { title: 'Pending', value: deploymentOverview.Pending, short: true }
+          { title: 'Task', value: message.eventTriggerName, short: true },
+          { title: 'Status', value: message.status, short: true },
+          { title: 'Application', value: message.applicationName, short: true },
+          { title: 'Deployment Group', value: message.deploymentGroupName, short: true },
+          { title: 'Region', value: message.region, short: true },
+          { title: 'Deployment Id', value: message.deploymentId, short: true },
+          { title: 'Create Time', value: message.createTime, short: true },
+          { title: 'Complete Time', value: ((message.completeTime) ? message.completeTime : ''), short: true }
         );
+
+        if (message.deploymentOverview) {
+          deploymentOverview = JSON.parse(message.deploymentOverview);
+          fields.push(
+            { title: 'Succeeded', value: deploymentOverview.Succeeded, short: true },
+            { title: 'Failed', value: deploymentOverview.Failed, short: true },
+            { title: 'Skipped', value: deploymentOverview.Skipped, short: true },
+            { title: 'In Progress', value: deploymentOverview.InProgress, short: true },
+            { title: 'Pending', value: deploymentOverview.Pending, short: true }
+          );
+        }
+      } else if (typeof message === 'string') {
+        fields.push(message);
       }
     }
 
@@ -145,6 +155,8 @@ class SlackNotifier {
       path: service.pathname
     };
 
+    console.log(`Sending Request to ${this.hookURL}`);
+
     let req = https.request(options, (res) => {
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
@@ -162,6 +174,7 @@ class SlackNotifier {
 
   startup() {
     this.work((data, err) => {
+      console.log('Data Sent');
       console.log(data);
       if (err) {
         console.log(err);
