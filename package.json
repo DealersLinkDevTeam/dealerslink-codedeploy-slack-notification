@@ -4,12 +4,12 @@
   "description": "An AWS Lambda-SNS function that reports CodeDeploy statuses to Slack",
   "main": "index.js",
   "config": {
-    "s3BucketName": "YOUR_UNIQUE_BUCKET_NAME",
-    "region": "YOUR_AWS_REGION",
-    "accountId": "YOUR_ACCOUNT_ID",
-    "functionName": "YOUR_LAMBDA_FUNCTION_NAME",
-    "snsTopicName": "YOUR_SNS_TOPIC_NAME",
-    "cloudFormationStackName": "YOUR_CLOUDFORMATION_STACK_NAME"
+    "s3BucketName": "codedeploy-slack-notification-bucket",
+    "region": "us-east-1",
+    "accountId": "620810885860",
+    "functionName": "Function",
+    "snsTopicName": "Topic",
+    "cloudFormationStackName": "CodeDeploySlackNotifications"
   },
   "scripts": {
     "test": "nyc mocha",

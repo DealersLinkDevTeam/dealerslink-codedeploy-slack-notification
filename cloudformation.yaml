@@ -25,9 +25,9 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref YOUR_LAMBDA_FUNCTION_NAME
+      FunctionName: !Ref Function
       Principal: sns.amazonaws.com
-      SourceArn: !Ref YOUR_SNS_TOPIC_NAME
+      SourceArn: !Ref Topic
 
   SNSLambdaFunctionRole:
     Type: AWS::IAM::Role
