@@ -23,7 +23,8 @@ const testData = {
 
 const data = JSON.stringify(testData);
 tester.handler(
-  { Records: [
+  {
+    Records: [
       {
         Sns: {
           Subject: 'Test',
@@ -38,5 +39,5 @@ tester.handler(
       console.log(res);
     }
   },
-  { }
+  {}
 );

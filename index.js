@@ -76,7 +76,7 @@ class SlackNotifier {
           { title: 'Region', value: message.region, short: true },
           { title: 'Deployment Id', value: message.deploymentId, short: true },
           { title: 'Create Time', value: message.createTime, short: true },
-          { title: 'Complete Time', value: ((message.completeTime) ? message.completeTime : ''), short: true }
+          { title: 'Complete Time', value: message.completeTime ? message.completeTime : '', short: true }
         );
 
         if (message.deploymentOverview) {
@@ -106,14 +106,14 @@ class SlackNotifier {
     if (!this.event || __.isUnset(this.event.Records)) {
       done(null, 'No Records');
       return;
-    } else {
-      record = this.event.Records[0];
-      if (__.isUnset(record.Sns)) {
-        done(null, 'No SNS Information');
-        return;
-      }
-      sns = record.Sns;
+    } 
+    record = this.event.Records[0];
+    if (__.isUnset(record.Sns)) {
+      done(null, 'No SNS Information');
+      return;
     }
+    sns = record.Sns;
+    
 
     const postData = {
       channel: `#${this.hookChannel}`,
@@ -127,9 +127,9 @@ class SlackNotifier {
     const messages = sns.Message;
     let severity = severities.good;
 
-    for (let idx in messages) {
+    for (const idx in messages) {
       if (messages.hasOwnProperty(idx)) {
-        let msg = messages[idx];
+        const msg = messages[idx];
         if (dangerMessages.includes(msg)) {
           severity |= severities.danger;
         } else if (warningMessages.includes(msg)) {
@@ -146,9 +146,9 @@ class SlackNotifier {
     }
 
     postData.attachments.push({ color: severity, fields: fields });
-    let service = url.parse(this.hookURL);
+    const service = url.parse(this.hookURL);
 
-    let options = {
+    const options = {
       method: 'POST',
       hostname: service.hostname,
       path: service.pathname
@@ -156,14 +156,14 @@ class SlackNotifier {
 
     console.log(`Sending Request to ${this.hookURL}`);
 
-    let req = https.request(options, (res) => {
+    const req = https.request(options, (res) => {
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
         done(null);
       });
     });
 
-    req.on('error', function(e) {
+    req.on('error', (e) => {
       done(null, `Problem with request: ${e.message}`);
     });
 
