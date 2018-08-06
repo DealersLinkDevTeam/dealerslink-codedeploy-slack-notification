@@ -14,6 +14,7 @@ const testFolder = config.testFolder;
 const configFolder = config.configFolder;
 
 const allJSFiles = [
+  '!gulpfile.js',
   '*.js',
   `${testFolder}/**/*.js`,
   `${testFolder}/*.js`,
