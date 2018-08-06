@@ -56,9 +56,8 @@ class SlackNotifier {
   }
 
   formatFields(str) {
-    let message = JSON.parse(str);
-    const fields  = [];
-    let deploymentOverview;
+    const fields = [];
+    let message, deploymentOverview;
 
     try {
       message = JSON.parse(str);
