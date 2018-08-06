@@ -1,3 +1,10 @@
+# Misc
+.DS_Store
+util
+*.bak
+docs
+dist
+
 # Logs
 logs
 *.log

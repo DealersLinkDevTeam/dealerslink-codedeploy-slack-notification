@@ -1,0 +1,53 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, API Gateway, and Lambda
+Resources:
+  YOUR_LAMBDA_FUNCTION_NAME:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 512
+      Timeout: 60
+      Role: !GetAtt SNSLambdaFunctionRole.Arn
+
+  YOUR_SNS_TOPIC_NAME:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !GetAtt YOUR_LAMBDA_FUNCTION_NAME
+          Protocol: lambda
+    DependsOn: YOUR_LAMBDA_FUNCTION_NAME
+
+  SNSInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref YOUR_LAMBDA_FUNCTION_NAME
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref YOUR_SNS_TOPIC_NAME
+
+  SNSLambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: logs
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: '*'
