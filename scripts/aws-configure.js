@@ -63,7 +63,7 @@ function performModify() {
       replacement: `$1${options.function}:`
     }, {
       regexp: /^(        - Endpoint: !GetAtt )(.*)$/gm,
-      replacement: `$1${options.function}`
+      replacement: `$1${options.function}.Arn`
     }, {
       regexp: /^(    DependsOn: )(.*)$/gm,
       replacement: `$1${options.function}`
