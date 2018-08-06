@@ -4,7 +4,7 @@ Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, 
 Resources:
   Function:
     Properties:
-      CodeUri: s3://codedeploy-slack-notification-bucket/3074545d49fee84649fa842471817956
+      CodeUri: s3://codedeploy-slack-notification-bucket/2cc3c32a56a2935ac251e3a9fecb0076
       Handler: index.handler
       MemorySize: 512
       Role:
@@ -52,6 +52,7 @@ Resources:
       - Endpoint:
           Fn::GetAtt:
           - Function
+          - Arn
         Protocol: lambda
     Type: AWS::SNS::Topic
 Transform: AWS::Serverless-2016-10-31
