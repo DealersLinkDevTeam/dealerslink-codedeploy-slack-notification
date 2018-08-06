@@ -1,10 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, API
-  Gateway, and Lambda
+Description: dealerslink-codedeploy-slack-notification - Delivers CodeDeploy Notifications
+  via SNS triggers to a Slack Webhook. Powered by CloudFormation, SNS, and Lambda
 Resources:
   Function:
     Properties:
-      CodeUri: s3://codedeploy-slack-notification-bucket/a4e068352cbfccb01bba60abb49153bc
+      CodeUri: s3://codedeploy-slack-notification-bucket/524bf7b70178253b64156b55df8f442c
       Handler: index.handler
       MemorySize: 512
       Role:
