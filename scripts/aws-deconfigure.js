@@ -52,7 +52,7 @@ inquirer.prompt([
         replacement: `$1${defaults.function}:`
       }, {
         regexp: /^(        - Endpoint: !GetAtt )(.*)$/gm,
-        replacement: `$1${defaults.function}`
+        replacement: `$1${defaults.function}.Arn`
       }, {
         regexp: /^(    DependsOn: )(.*)$/gm,
         replacement: `$1${defaults.function}`
