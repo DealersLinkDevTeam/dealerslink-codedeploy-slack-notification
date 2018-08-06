@@ -17,7 +17,7 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       Subscription:
-        - Endpoint: !GetAtt Function
+        - Endpoint: !GetAtt Function.Arn
           Protocol: lambda
     DependsOn: Function
 
