@@ -2,6 +2,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: deaelerslink-advanced-image-service powered by CloudFormation, S3, API
   Gateway, and Lambda
 Resources:
+  Function:
+    Properties:
+      CodeUri: s3://codedeploy-slack-notification-bucket/d80e36cee827b1d60571b34c339ae472
+      Handler: index.handler
+      MemorySize: 512
+      Role:
+        Fn::GetAtt:
+        - SNSLambdaFunctionRole
+        - Arn
+      Runtime: nodejs8.10
+      Timeout: 60
+    Type: AWS::Serverless::Function
   SNSInvokePermission:
     Properties:
       Action: lambda:InvokeFunction
@@ -33,25 +45,13 @@ Resources:
           Version: '2012-10-17'
         PolicyName: logs
     Type: AWS::IAM::Role
-  YOUR_LAMBDA_FUNCTION_NAME:
-    Properties:
-      CodeUri: s3://codedeploy-slack-notification-bucket/2421222e82b4f37f2a0f7366649d9bc6
-      Handler: index.handler
-      MemorySize: 512
-      Role:
-        Fn::GetAtt:
-        - SNSLambdaFunctionRole
-        - Arn
-      Runtime: nodejs8.10
-      Timeout: 60
-    Type: AWS::Serverless::Function
-  YOUR_SNS_TOPIC_NAME:
-    DependsOn: YOUR_LAMBDA_FUNCTION_NAME
+  Topic:
+    DependsOn: Function
     Properties:
       Subscription:
       - Endpoint:
           Fn::GetAtt:
-          - YOUR_LAMBDA_FUNCTION_NAME
+          - Function
         Protocol: lambda
     Type: AWS::SNS::Topic
 Transform: AWS::Serverless-2016-10-31
