@@ -44,8 +44,8 @@ Built in scripts are provided to aid with build and provisioning of the services
 1. If it is not already, install the [AWS CLI](https://aws.amazon.com/cli/) in the staging environment (MacOS/Linux only).  For building on Windows, [see the instructions below](#windows),
 2. Clone the git repo:
 ```shell
-$ git clone https://github.com/DealersLinkDevTeam/dealerslink-advanced-image-service.git
-$ cd dealerslink-advanced-image-service
+$ git clone https://github.com/DealersLinkDevTeam/dealerslink-codedeploy-slack-notification.git
+$ cd dealerslink-codedeploy-slack-notification
 ```
 3. Run the base configurator and enter the information from the Slack setup steps:
 ```shell
