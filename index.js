@@ -90,7 +90,7 @@ class SlackNotifier {
           );
         }
       } else if (typeof message === 'string') {
-        fields.push(message);
+        fields.push({ title: 'Message', value: message, short: false });
       }
     }
 
@@ -129,11 +129,16 @@ class SlackNotifier {
     for (const idx in messages) {
       if (messages.hasOwnProperty(idx)) {
         const msg = messages[idx];
-        if (dangerMessages.includes(msg)) {
-          severity |= severities.danger;
-        } else if (warningMessages.includes(msg)) {
-          severity |= severities.warning;
-        }
+        __.forEach(dangerMessages, (v) => {
+          if (msg.indexOf(v) !== -1) {
+            severity |= severities.danger;
+          }
+        });
+        __.forEach(warningMessages, (v) => {
+          if (msg.indexOf(v) !== -1) {
+            severity |= severities.warning;
+          }
+        });
       }
     }
 
