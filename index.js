@@ -106,20 +106,19 @@ class SlackNotifier {
     if (!this.event || __.isUnset(this.event.Records)) {
       done(null, 'No Records');
       return;
-    } 
+    }
     record = this.event.Records[0];
     if (__.isUnset(record.Sns)) {
       done(null, 'No SNS Information');
       return;
     }
     sns = record.Sns;
-    
+
 
     const postData = {
       channel: `#${this.hookChannel}`,
       username: 'CodeDeploy Status',
-      text: `* ${sns.Subject} *`,
-      icon_emoji: ':aws:',
+      text: `*${sns.Subject}*`,
       attachments: []
     };
 
@@ -138,14 +137,18 @@ class SlackNotifier {
       }
     }
 
-    let color = 'good';
+    let color = '#36a64f';
     if ((severity & severities.danger) === severities.danger) {
-      color = 'danger';
+      color = '#a63636';
     } else if ((severity & severities.warning) === severities.warning) {
-      color = 'warning';
+      color = '#a68d36';
     }
 
-    postData.attachments.push({ color: severity, fields: fields });
+    if (fields.length === 0) {
+      fields.push({ title: 'Notes', value: 'No other information available', short: false });
+    }
+
+    postData.attachments.push({ fallback: `${sns.Subject}`, color: color, fields: fields });
     const service = url.parse(this.hookURL);
 
     const options = {
@@ -155,6 +158,7 @@ class SlackNotifier {
     };
 
     console.log(`Sending Request to ${this.hookURL}`);
+    console.log(postData);
 
     const req = https.request(options, (res) => {
       res.setEncoding('utf8');
