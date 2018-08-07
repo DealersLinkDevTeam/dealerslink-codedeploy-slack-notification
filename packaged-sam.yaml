@@ -4,9 +4,9 @@ Description: dealerslink-codedeploy-slack-notification - Delivers CodeDeploy Not
 Resources:
   Function:
     Properties:
-      CodeUri: s3://codedeploy-slack-notification-bucket/524bf7b70178253b64156b55df8f442c
+      CodeUri: s3://codedeploy-slack-notification-bucket/3b5c4d42e1a333c901a61c6011bb1f7d
       Handler: index.handler
-      MemorySize: 512
+      MemorySize: 128
       Role:
         Fn::GetAtt:
         - SNSLambdaFunctionRole
