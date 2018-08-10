@@ -2,7 +2,7 @@ const __ = require('@dealerslink/lodash-extended');
 const config = require('./config/config');
 const defaults = require('./config/default.config');
 const baseConfig = __.merge(Object.assign({}, defaults), config);
-const pkg = require('./package.json');
+// const pkg = require('./package.json');
 
 const https = require('https');
 const util = require('util');
@@ -51,8 +51,8 @@ class SlackNotifier {
     this.context = context;
     this.callback = callback;
 
-    this.hookChannel = this.options.hookChannel || config.hookChannel || 'general';
-    this.hookURL = this.options.hookURL || config.hookURL;
+    this.hookChannel = this.options.hookChannel || baseConfig.hookChannel || 'general';
+    this.hookURL = this.options.hookURL || baseConfig.hookURL;
   }
 
   formatFields(str) {
@@ -67,7 +67,7 @@ class SlackNotifier {
 
     // Make sure we have a valid response
     if (message) {
-      if (typeof messsage === 'object') {
+      if (typeof message === 'object') {
         fields.push(
           { title: 'Task', value: message.eventTriggerName, short: true },
           { title: 'Status', value: message.status, short: true },
@@ -98,23 +98,21 @@ class SlackNotifier {
   }
 
   work(done) {
-    let record, sns;
     console.log(JSON.stringify(this.event));
-    console.log(typeof this.event);
 
     // Skip if the event is empty or unset
     if (!this.event || __.isUnset(this.event.Records)) {
       done(null, 'No Records');
       return;
     }
-    record = this.event.Records[0];
+
+    const record = this.event.Records[0];
     if (__.isUnset(record.Sns)) {
       done(null, 'No SNS Information');
       return;
     }
-    sns = record.Sns;
 
-
+    const sns = record.Sns;
     const postData = {
       channel: `#${this.hookChannel}`,
       username: 'CodeDeploy Status',
@@ -129,13 +127,13 @@ class SlackNotifier {
     for (const idx in messages) {
       if (messages.hasOwnProperty(idx)) {
         const msg = messages[idx];
-        __.forEach(dangerMessages, (v) => {
-          if (msg.indexOf(v) !== -1) {
+        __.forEach(dangerMessages, (val) => {
+          if (msg.indexOf(val) !== -1) {
             severity |= severities.danger;
           }
         });
-        __.forEach(warningMessages, (v) => {
-          if (msg.indexOf(v) !== -1) {
+        __.forEach(warningMessages, (val) => {
+          if (msg.indexOf(val) !== -1) {
             severity |= severities.warning;
           }
         });
@@ -163,17 +161,17 @@ class SlackNotifier {
     };
 
     console.log(`Sending Request to ${this.hookURL}`);
-    console.log(postData);
+    console.log(JSON.stringify(postData));
 
     const req = https.request(options, (res) => {
       res.setEncoding('utf8');
-      res.on('data', (chunk) => {
+      res.on('data', () => {
         done(null);
       });
     });
 
-    req.on('error', (e) => {
-      done(null, `Problem with request: ${e.message}`);
+    req.on('error', (ex) => {
+      done(null, `Problem with request: ${ex.message}`);
     });
 
     req.write(util.format('%j', postData));
