@@ -9,14 +9,15 @@ const deployTestData = {
 };
 
 const testData = {
-  eventTriggerName: 'Deploy',
+  eventTriggerName: 'Test-Deploy-Trigger',
   createTime: '2018-03-29T17:20:35',
   completeTime: '2018-03-29T17:20:35',
-  deploymentId: 1,
+  deploymentId: 'd-XXXXXXXXX',
   region: 'us-east-1',
   deploymentGroupName: 'Test-Dev',
+  accountId: '620810885860',
   applicationName: 'Test',
-  status: 'Success',
+  status: 'CREATED',
   object: 'vehicle',
   deploymentOverview: JSON.stringify(deployTestData)
 };
