@@ -5,6 +5,11 @@ An AWS Lambda-SNS function that reports CodeDeploy statuses to Slack
   1. [Documentation](#documentation)
       1. [Stack](#stack)
       2. [Configuration](#config)
+          1. [Slack Pre-Setup](#slack)
+          2. [Main Deployment](#main)
+          3. [CodeDeploy Triggers](#codedeploy)
+          4. [Deconfig](#deconfig)
+          5. [Teardown](#teardown)
   2. [Appendix](#appendix)
       1. [Building on Windows](#windows)
       2. [Debugging](#debugging)
@@ -25,13 +30,24 @@ The service makes use of an SNS Topic hooked to CodeDeploy and an Lambda Functio
 ## Configuration
 Built in scripts are provided to aid with build and provisioning of the services. These steps should be performed in the `deploy` branch of the repository to ensure that the deployment matches existing configuration. To configure the environment, perform the following steps:
 
+<a name="slack"></a>
+### Slack Pre-Setup
+1. In your Slack Workspace, Go to the App Browser -- https://[yourspace].slack.com/apps
+2. Search for **'incoming-webhook'** and select it.
+3. Select **'Add Configuration'**
+4. Select a Channel in your Workspace to default messages to -- Make a note of this channel name.
+5. Select **'Add Incoming WebHooks integration'**
+6. Take note of the **'Webhook URL'** that shows up in the configuration panel of the next page.
+
+<a name="main"></a>
+### Main Deployment
 1. If it is not already, install the [AWS CLI](https://aws.amazon.com/cli/) in the staging environment (MacOS/Linux only).  For building on Windows, [see the instructions below](#windows),
 2. Clone the git repo:
 ```shell
-$ git clone https://github.com/DealersLinkDevTeam/dealerslink-advanced-image-service.git
-$ cd dealerslink-advanced-image-service
+$ git clone https://github.com/DealersLinkDevTeam/dealerslink-codedeploy-slack-notification.git
+$ cd dealerslink-codedeploy-slack-notification
 ```
-3. Run the base configurator*:
+3. Run the base configurator and enter the information from the Slack setup steps:
 ```shell
 $ npm run config
 ```
@@ -44,6 +60,21 @@ $ npm run aws-config
 $ npm run setup
 ```
 
+<a name="codedeploy"></a>
+### CodeDeploy Triggers
+To setup a CodeDeploy Application to deliver notifications, perform the following steps:
+
+1. Go to the [AWS CodeDeploy Console](https://console.aws.amazon.com/codedeploy/home)
+2. Select your Application
+3. Toggle open the Application Stage you would like to alter using the '▸'.
+4. Click **'Create Trigger'**
+5. Provide a Trigger Name.
+6. For Events, select **'Deployment Status (all)'**
+7. For Amazon SNS topics, select the newly created SNS Topic. It will be over the form 'StackName-TopicName-XXXXXXXX'.
+8. Save the Trigger
+
+<a name="deconfig"></a>
+### Deconfig
 To revert the configuration to defaults, perform the following:
 
 1. Run the AWS deconfigurator:
@@ -54,7 +85,8 @@ $ npm run aws-deconfig
 ```shell
 $ npm run deconfig
 ```
-
+<a name="teardown"></a>
+### Teardown
 To tear down a deployment, perform the following:
 
 1. Run the teardown command:
