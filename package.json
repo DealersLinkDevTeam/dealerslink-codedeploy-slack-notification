@@ -5,6 +5,7 @@
   "main": "index.js",
   "config": {
     "s3BucketName": "YOUR_UNIQUE_BUCKET_NAME",
+    "s3Prefix": "YOUR_S3_PREFIX",
     "region": "YOUR_AWS_REGION",
     "accountId": "YOUR_ACCOUNT_ID",
     "functionName": "YOUR_LAMBDA_FUNCTION_NAME",
@@ -26,7 +27,7 @@
     "create-bucket": "aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "delete-bucket": "aws s3 rb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "describe": "aws cloudformation describe-stacks --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region --query Stacks[].Outputs --output table",
-    "package": "aws cloudformation package --template ./cloudformation.yaml --s3-bucket $npm_package_config_s3BucketName --output-template packaged-sam.yaml --region $npm_package_config_region",
+    "package": "aws cloudformation package --template ./cloudformation.yaml --s3-bucket $npm_package_config_s3BucketName --s3-prefix $npm_package_config_s3Prefix --output-template packaged-sam.yaml --region $npm_package_config_region",
     "deploy": "aws cloudformation deploy --template-file packaged-sam.yaml --stack-name $npm_package_config_cloudFormationStackName --capabilities CAPABILITY_IAM --region $npm_package_config_region",
     "package-deploy": "npm run package && npm run deploy",
     "delete-stack": "aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
