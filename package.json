@@ -4,8 +4,8 @@
   "description": "An AWS Lambda-SNS function that reports CodeDeploy statuses to Slack",
   "main": "index.js",
   "config": {
-    "s3BucketName": "codedeploy-slack-notification-bucket",
-    "s3Prefix": "YOUR_S3_PREFIX",
+    "s3BucketName": "dealerslink-code-deployments",
+    "s3Prefix": "dealerslink-codedeploy-slack-notification",
     "region": "us-east-1",
     "accountId": "620810885860",
     "functionName": "Function",
