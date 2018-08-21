@@ -10,6 +10,7 @@ const defaults = {
   account: 'YOUR_ACCOUNT_ID',
   stack: 'YOUR_CLOUDFORMATION_STACK_NAME',
   bucket: 'YOUR_UNIQUE_BUCKET_NAME',
+  prefix: 'YOUR_S3_PREFIX',
   function: 'YOUR_LAMBDA_FUNCTION_NAME',
   sns: 'YOUR_SNS_TOPIC_NAME'
 };
@@ -37,6 +38,9 @@ inquirer.prompt([
       }, {
         regexp: /("s3BucketName": )"([A-Za-z0-9_-]*)",/,
         replacement: `$1"${defaults.bucket}",`
+      }, {
+        regexp: /("s3Prefix": )"([a-zA-Z_\-0-9\/]*)",/,
+        replacement: `$1"${defaults.prefix}",`
       }, {
         regexp: /("functionName": )"([A-Za-z0-9_-]*)",/,
         replacement: `$1"${defaults.function}",`

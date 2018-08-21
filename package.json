@@ -1,10 +1,11 @@
 {
   "name": "dealerslink-codedeploy-slack-notification",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "An AWS Lambda-SNS function that reports CodeDeploy statuses to Slack",
   "main": "index.js",
   "config": {
     "s3BucketName": "codedeploy-slack-notification-bucket",
+    "s3Prefix": "YOUR_S3_PREFIX",
     "region": "us-east-1",
     "accountId": "620810885860",
     "functionName": "Function",
@@ -26,7 +27,7 @@
     "create-bucket": "aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "delete-bucket": "aws s3 rb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "describe": "aws cloudformation describe-stacks --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region --query Stacks[].Outputs --output table",
-    "package": "aws cloudformation package --template ./cloudformation.yaml --s3-bucket $npm_package_config_s3BucketName --output-template packaged-sam.yaml --region $npm_package_config_region",
+    "package": "aws cloudformation package --template ./cloudformation.yaml --s3-bucket $npm_package_config_s3BucketName --s3-prefix $npm_package_config_s3Prefix --output-template packaged-sam.yaml --region $npm_package_config_region",
     "deploy": "aws cloudformation deploy --template-file packaged-sam.yaml --stack-name $npm_package_config_cloudFormationStackName --capabilities CAPABILITY_IAM --region $npm_package_config_region",
     "package-deploy": "npm run package && npm run deploy",
     "delete-stack": "aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
@@ -45,18 +46,19 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "codacy-coverage": "^3.0.0",
-    "commander": "^2.16.0",
-    "gulp": "^3.9.1",
+    "commander": "^2.17.1",
+    "gulp": "^4.0.0",
     "gulp-eslint": "^5.0.0",
     "gulp-mocha": "^6.0.0",
     "gulp-prettier": "^2.0.0",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
-    "prettier": "^1.13.7"
+    "prettier": "^1.14.2"
   },
   "dependencies": {
     "@dealerslink/lodash-extended": "^1.0.0",
-    "ajv": "^6.5.2",
-    "aws-sdk": "^2.270.1"
+    "ajv": "^6.5.3",
+    "aws-sdk": "^2.298.0",
+    "inquirer": "^6.1.0"
   }
 }
