@@ -28,6 +28,7 @@ const options = {
   account: null,
   stack: null,
   bucket: null,
+  prefix: null,
   function: null,
   sns: null
 };
@@ -48,6 +49,9 @@ function performModify() {
     }, {
       regexp: /("s3BucketName": )"([A-Za-z0-9_-]*)",/,
       replacement: `$1"${options.bucket}",`
+    }, {
+      regexp: /("s3Prefix": )"([a-zA-Z_\-0-9\/]*)",/,
+      replacement: `$1"${options.prefix}",`
     }, {
       regexp: /("functionName": )"([A-Za-z0-9_-]*)",/,
       replacement: `$1"${options.function}",`
@@ -85,7 +89,7 @@ function setupQuestions() {
     questions.push({
       type: 'list',
       name: 'region',
-      default: availableRegions,
+      default: getDefault(options.region, availableRegions),
       choices: availableRegions,
       message: 'Select an AWS Region:'
     });
@@ -98,6 +102,7 @@ function setupQuestions() {
       type: 'input',
       name: 'account',
       message: 'Supply a 12-digit AWS Account ID:',
+      default: getDefault(options.account, null),
       validate: (v) => {
         if ((/^\w{12}$/).test(v)) {
           return true;
@@ -115,7 +120,7 @@ function setupQuestions() {
       type: 'input',
       name: 'stack',
       message: 'Enter a CloudFormation Stack name:',
-      default: 'CodeDeploySlackNotifications',
+      default: getDefault(options.stack, 'CodeDeploySlackNotifications'),
       validate: (v) => {
         if ((/^[a-zA-Z][a-zA-Z0-9]*$/).test(v)) {
           return true;
@@ -133,7 +138,7 @@ function setupQuestions() {
       type: 'input',
       name: 'bucket',
       message: 'Enter a unique AWS S3 Bucket name for deployment:',
-      default: 'codedeploy-slack-notification-bucket',
+      default: getDefault(options.bucket, 'codedeploy-slack-notification-bucket'),
       validate: (v) => {
         if ((/^[a-z0-9_/-]*$/).test(v)) {
           return true;
@@ -146,12 +151,30 @@ function setupQuestions() {
     options.bucket = program.bucket;
   }
 
+  if (!program.prefix) {
+    questions.push({
+      type: 'input',
+      name: 'prefix',
+      message: 'Enter a unique AWS S3 Prefix name:',
+      default: getDefault(options.prefix, '/'),
+      validate: (v) => {
+        if ((/^[a-zA-Z_\-0-9\/]*$/).test(v)) {
+          return true;
+        } else {
+          return 'Must be a valid bucket name. Only Alphanumercic, Underscore, Dash and Slash are allowed.'
+        }
+      }
+    });
+  } else {
+    options.prefix = program.prefix;
+  }
+
   if (!program.sns) {
     questions.push({
       type: 'input',
       name: 'sns',
       message: 'Enter the Unique SNS Topic name:',
-      default: 'Topic',
+      default: getDefault(options.sns, 'Topic'),
       validate: (v) => {
         if ((/^[a-zA-Z][a-zA-Z0-9]*$/).test(v)) {
           return true;
@@ -169,7 +192,7 @@ function setupQuestions() {
       type: 'input',
       name: 'function',
       message: 'Enter the AWS Lambda Composite function name:',
-      default: 'Function',
+      default: getDefault(options.function, 'Function'),
       validate: (v) => {
         if ((/^[a-zA-Z][a-zA-Z0-9]*$/).test(v)) {
           return true;
@@ -188,11 +211,34 @@ function mapAnswers(answers) {
   if (answers.account) { options.account = answers.account; }
   if (answers.stack) { options.stack = answers.stack; }
   if (answers.bucket) { options.bucket = answers.bucket; }
+  if (answers.prefix) { options.prefix = answers.prefix; }
   if (answers.sns) { options.sns = answers.sns; }
   if (answers.function) { options.function = answers.function; }
 }
 
+function getDefault(value, def) {
+  if (value) {
+    if (value.toString().startsWith('YOUR')) {
+      return def;
+    }
+    return value;
+  }
+  return def;
+}
+
+function mapDefaults() {
+  const conf = pack.config;
+  if (conf.region) { options.region = conf.region; }
+  if (conf.accountId) { options.account = conf.accountId; }
+  if (conf.cloudFormationStackName) { options.stack = conf.cloudFormationStackName; }
+  if (conf.s3BucketName) { options.bucket = conf.s3BucketName; }
+  if (conf.s3Prefix) { options.prefix = conf.s3Prefix; }
+  if (conf.snsTopicName) { options.sns = conf.snsTopicName; }
+  if (conf.functionName) { options.function = conf.functionName; }
+}
+
 function doConfig() {
+  mapDefaults();
   setupQuestions();
   if (questions.length !== 0) {
     inquirer.prompt(questions)
@@ -216,6 +262,7 @@ program
   .option(
     '-l, --function <lambdaFunctionName>',
     'The name of the Lambda function to use. Defaults to "Function"')
+  .option('-p, --prefix <prefixName>', 'The S3 File Prefix (folder) to configure and use.')
   .option('-r, --region <awsRegion>', 'The AWS region to use. Defaults to "us-east-1".')
   .option(
     '-s, --stack <stackName>',
